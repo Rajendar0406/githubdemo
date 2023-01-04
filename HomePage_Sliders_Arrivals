@@ -1,0 +1,199 @@
+import time
+
+import pytest
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from basedriver import BaseDriver
+
+class HomePage(BaseDriver):
+    def __init__(self, driver):
+        super().__init__(driver)
+        self.driver = driver
+
+# option = Options()
+# option.add_argument('--disable-notifications')
+# driver = webdriver.Chrome(executable_path = "C:\\Users\\raikoderajendar\chromedriver.exe", chrome_options= option)
+#
+# driver.get("http://practice.automationtesting.in/")
+# driver.maximize_window()
+
+
+Shop_Click = driver.find_element(By.LINK_TEXT, "Shop")
+Shop_Click.click()
+
+Home_menu_Click = driver.find_element(By.XPATH, "//nav[@class = 'woocommerce-breadcrumb']//a")
+Home_menu_Click.click()
+
+print(self.driver.current_url)
+
+if driver.current_url == "https://practice.automationtesting.in/shop/#google_vignette":
+    print("Updating the url")
+    driver.get("https://practice.automationtesting.in")
+    print("Url updated to homepage")
+
+# Slider_click = driver.find_element(By.XPATH, "//div[@id='n2-ss-6-arrow-next']/img[@class='n2-ow']")
+# Slider_click.click()
+
+Sliders = driver.find_elements(By.XPATH, "//div[@class ='n2-ss-slider-1 n2-grab']//div//img")
+print(len(Sliders))
+
+assert len(Sliders) == 3
+
+for i in range(len(Sliders)):
+    Slider_click = driver.find_element(By.XPATH, "//div[@id='n2-ss-6-arrow-next']/img[@class='n2-ow']")
+    Slider_click.click()
+    time.sleep(2)
+
+**************************************************************************************************************************
+
+import time
+
+import pytest
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+
+
+#def test_CheckHomePageArrivals():
+from selenium.webdriver.support.wait import WebDriverWait
+
+option = Options()
+option.add_argument('--disable-notifications')
+
+driver = webdriver.Chrome(executable_path="C:\\Users\\raikoderajendar\chromedriver.exe", chrome_options=option)
+driver.get("http://practice.automationtesting.in/")
+driver.maximize_window()
+Shop_Click = driver.find_element(By.LINK_TEXT, "Shop")
+Shop_Click.click()
+if driver.current_url == "https://practice.automationtesting.in/#google_vignette":
+    print("Updating the url")
+    driver.get("https://practice.automationtesting.in/shop/")
+
+Home_menu_Click = driver.find_element(By.XPATH, "//nav[@class = 'woocommerce-breadcrumb']//a")
+Home_menu_Click.click()
+
+if driver.current_url == "https://practice.automationtesting.in/shop/#google_vignette":
+    print("Updating the url")
+    driver.get("https://practice.automationtesting.in")
+
+print("Checking the arrivals")
+wait = WebDriverWait(driver, 5)
+
+Arrivals = wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@class = 'woocommerce']//ul//li//a//img")))\
+    .find_elements(By.XPATH, "//div[@class = 'woocommerce']//ul//li//a//img")
+#Arrivals = driver.find_elements(By.XPATH, "//div[@class = 'woocommerce']//ul//li//a//h3")
+#driver.execute_script("arguments[0].scrollIntoView();",Arrivals)
+print(len(Arrivals))
+
+assert len(Arrivals) == 3
+
+print("The Homepage contains 3 Arrivals only")
+
+for arrival in Arrivals:
+    if arrival.get_attribute("title") == 'Mastering JavaScript':
+        driver.execute_script("arguments[0].scrollIntoView();", arrival)
+        arrival.click()
+
+assert 'Mastering JavaScript' in driver.title
+
+#Description testcase
+
+Description = driver.find_element(By.XPATH, "//div[contains(@class, 'woocommerce-tabs')]//ul//li[1]//a")
+Description.click()
+
+time.sleep(3)
+
+#Review testcase
+
+Review = driver.find_element(By.XPATH, "//div[contains(@class, 'woocommerce-tabs')]//ul//li[2]//a")
+Review.click()
+
+#Adding product to basket testcase
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Product_AddToCart = driver.find_element(By.XPATH, "//button[contains(text(), 'Add to basket')]")
+Product_AddToCart.click()
+
+View_Bucket = driver.find_element(By.XPATH, "//div[@class = 'woocommerce-message']//a")
+View_Bucket.click()
+
+product_check = driver.find_element(By.XPATH, "//table[contains(@class, 'shop_table')]//tbody//tr//td[3]//a")
+
+assert product_check.text == 'Mastering JavaScript'
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Framework Code: Sliders
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+import time
+
+import pytest
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from basedriver import BaseDriver
+
+class HomePage(BaseDriver):
+    def __init__(self, driver):
+        super().__init__(driver)
+        self.driver = driver
+
+#Locators
+    Shop_Click_link = "Shop"
+    Home_menu_Click = "//nav[@class = 'woocommerce-breadcrumb']//a"
+    Slider_click = "//div[@class ='n2-ss-slider-1 n2-grab']//div//img"
+
+
+    def getShopMenuClick(self):
+        return self.driver.find_element(By.LINK_TEXT, self.Shop_Click_link)
+        #Shop_Click.click()
+
+    def getHomeMenuClick(self):
+        return self.driver.find_element(By.XPATH, self.Home_menu_Click)
+
+    def getSliderClick(self):
+        return self.driver.find_elements(By.XPATH, self.Slider_click)
+
+
+    def clickShopLink(self):
+        self.getShopMenuClick().click()
+
+    def clickHomeLink(self):
+        self.getHomeMenuClick().click()
+
+        print(self.driver.current_url)
+        if self.driver.current_url == "https://practice.automationtesting.in/shop/#google_vignette":
+            print("Updating the url")
+            self.driver.get("https://practice.automationtesting.in")
+        print("Url updated to homepage")
+    # Home_menu_Click = self.driver.find_element(By.XPATH, "//nav[@class = 'woocommerce-breadcrumb']//a")
+    # Home_menu_Click.click()
+
+    def clickSliderimage(self):
+        #self.getSliderClick().click()
+        Sliders = self.driver.find_elements(By.XPATH, "//div[@class ='n2-ss-slider-1 n2-grab']//div//img")
+        print(len(self.getSliderClick()))
+
+        assert len(Sliders) == 3
+
+        for i in range(len(Sliders)):
+            Slider_click = self.driver.find_element(By.XPATH, "//div[@id='n2-ss-6-arrow-next']/img[@class='n2-ow']")
+            Slider_click.click()
+            time.sleep(2)
+

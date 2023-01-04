@@ -1,0 +1,124 @@
+import time
+
+from selenium.webdriver.common.by import By
+from base.basedriver import BaseDriver
+
+class HomePage(BaseDriver):
+    def __init__(self, driver):
+        super().__init__(driver)
+        self.driver = driver
+
+#Locators
+    Shop_Click_link = "Shop"
+    Home_menu_Click = "//nav[@class = 'woocommerce-breadcrumb']//a"
+    Slider_click = "//div[@class ='n2-ss-slider-1 n2-grab']//div//img"
+    Arrivals_images = "//div[@class = 'woocommerce']//ul//li//a//img"
+    Description_field = "//div[contains(@class, 'woocommerce-tabs')]//ul//li[1]//a"
+    Review_field = "//div[contains(@class, 'woocommerce-tabs')]//ul//li[2]//a"
+
+    def getShopMenuClick(self):
+        return self.driver.find_element(By.LINK_TEXT, self.Shop_Click_link)
+        #Shop_Click.click()
+
+    def getHomeMenuClick(self):
+        return self.driver.find_element(By.XPATH, self.Home_menu_Click)
+
+    def getSliderClick(self):
+        return self.driver.find_elements(By.XPATH, self.Slider_click)
+
+    def getArrivalsImages(self):
+        return self.wait_elementClickable(By.XPATH, self.Arrivals_images)
+
+    def getDescriptionField(self):
+        return self.driver.find_element(By.XPATH, self.Description_field)
+
+    def getReviewField(self):
+        return self.driver.find_element(By.XPATH, self.Review_field)
+
+
+
+    def clickShopLink(self):
+        self.getShopMenuClick().click()
+
+    def clickHomeLink(self):
+        self.getHomeMenuClick().click()
+
+        print(self.driver.current_url)
+        if self.driver.current_url == "https://practice.automationtesting.in/shop/#google_vignette":
+            print("Updating the url")
+            self.driver.get("https://practice.automationtesting.in")
+        print("Url updated to homepage")
+    # Home_menu_Click = self.driver.find_element(By.XPATH, "//nav[@class = 'woocommerce-breadcrumb']//a")
+    # Home_menu_Click.click()
+
+    def clickSliderimage(self):
+        #self.getSliderClick().click()
+        Sliders = self.driver.find_elements(By.XPATH, "//div[@class ='n2-ss-slider-1 n2-grab']//div//img")
+        print(len(self.getSliderClick()))
+
+        assert len(Sliders) == 3
+
+        for i in range(len(Sliders)):
+            Slider_click = self.driver.find_element(By.XPATH, "//div[@id='n2-ss-6-arrow-next']/img[@class='n2-ow']")
+            Slider_click.click()
+            time.sleep(2)
+
+    def ArrivalsCountVerify(self):
+        Arrivals = self.getArrivalsImages()\
+    .find_elements(By.XPATH, self.Arrivals_images)
+
+        assert len(Arrivals) == 3
+        print("The Homepage contains 3 Arrivals only")
+
+    def ArrivalproductClick(self):
+        for arrival in self.getArrivalsImages().find_elements(By.XPATH, self.Arrivals_images):
+            if arrival.get_attribute("title") == 'Mastering JavaScript':
+                self.driver.execute_script("arguments[0].scrollIntoView();", arrival)
+                arrival.click()
+
+
+    def DescriptionDetails(self):
+        self.getDescriptionField().click()
+        print("Description is Read")
+        time.sleep(3)
+
+    def ReviewDetails(self):
+        self.getReviewField().click()
+        print("Review is read")
+
+======================================================================================================================
+
+execution test:
+
+
+import pytest
+from pages.Check_Sliders_HomePage import HomePage
+
+@pytest.mark.usefixtures("setup")
+class TestSlidersAndArrivalsVerify():
+
+    @pytest.fixture(autouse = True)
+    def class_setup(self):
+        self.Hp = HomePage(self.driver)
+        #self.ut = Utils()
+
+    def test_sliders_check(self):
+        self.Hp.clickShopLink()
+        self.Hp.clickHomeLink()
+        self.Hp.clickSliderimage()
+
+    def test_Arrivals_check(self):
+        self.test_sliders_check()
+        self.Hp.ArrivalsCountVerify()
+
+    def test_Arrival_Product_click(self):
+        self.test_sliders_check()
+        self.Hp.ArrivalsCountVerify()
+        self.Hp.ArrivalproductClick()
+
+    def test_Description_Review(self):
+        self.test_sliders_check()
+        self.Hp.ArrivalsCountVerify()
+        self.Hp.ArrivalproductClick()
+        self.Hp.DescriptionDetails()
+        self.Hp.ReviewDetails()
